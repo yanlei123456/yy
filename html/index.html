@@ -1,0 +1,172 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="UTF-8">
+		<title></title>
+		<style>
+			a{
+				text-decoration: none;
+				color: black;
+				cursor: pointer;
+				background-color: pink;
+				display: block;
+				padding: 7px 0 -2px 0;
+				text-align: center;
+				width: 30%;
+				/*float: left;*/
+				margin: 0 auto;
+			}
+			li{
+				list-style: none;
+				font-size: 18px;
+				color: green;
+				margin-left: 15px;
+			}
+			span{
+				color: #767676;
+				font-size: 14px;
+				margin-left: 12px;
+			}
+			ol{
+				
+
+				padding-bottom: 15px;
+			
+					margin-bottom: 15px;
+				margin-top: 5px;
+			}
+		/*	input{ display: block; margin: 20px;}*/
+			#textname{
+				margin-top: 70px;
+			}
+			button{
+				float: right;
+				margin-top: -80px;
+			}
+			#btn{
+				margin-left: 380px;
+				margin-right: 20px;
+				float: left;
+				margin-top: 70px;
+				border:0;
+			}
+
+		</style>
+	</head>
+	
+	<body>
+		<ul id="ul">
+			
+			
+		</ul>
+		<div>
+			<input type="text" id="textname" placeholder="头条"/>
+			<input type="text" id="names" placeholder="发布人"/>
+			<input type="text" id="texts" placeholder="发布内容"/>
+
+			<button id="btn">录入</button>
+		</div>
+		
+		
+		
+		
+		<script>
+	over()
+	function over(){
+		ajax1({
+			type:"get",
+			url:"http://localhost:8000/get",
+			success:function(da){
+				var arr = eval('('+da+')')
+//				console.log()
+var str = ''
+				for(var i=0;i<arr.length;i++){
+					str+=`<a href="http://localhost:8000/?uid=${arr[i].uid}">
+					<li>头条：${arr[i].name}</li>
+					<span>发布人：${arr[i].textname}</span>
+					<ol>${arr[i].text}</ol>
+						
+					</a>
+					    `
+				}
+				ul.innerHTML = str
+			},
+			error:function(da){
+				console.log(da)
+			}
+		  })
+	}
+		
+		
+		btn.onclick = function(){
+			ajax1({
+			type:"get",
+			url:"http://localhost:8000/lu",
+			data:{
+				text:texts.value,
+				name:names.value,
+				textname:textname.value
+			},
+			success:function(da){
+				console.log(da)
+                over()
+			},
+			error:function(da){
+				console.log(da)
+			}
+		  })
+		}
+
+
+
+
+
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		 function ajax1(text){
+        	
+        	var xhr = new XMLHttpRequest()
+        	if(text.type == "get"){
+    //这里是get
+        xhr.open('get',text.url+'?'+strUrl(text.data),true)
+        xhr.send()
+        	}else{
+        		//这里是post
+        		xhr.open('post',text.url,true)
+		xhr.setRequestHeader("Content-Type","application/x-www-form-urlencoded")
+                xhr.send(strUrl(text.data))
+        	}
+        	xhr.onreadystatechange = function(){
+        		if(xhr.readyState == 4){
+        			if(xhr.status>=200&&xhr.status<300 || xhr.status==304){
+        			  text.success(xhr.responseText)
+        			}else{
+        				text.error(xhr.status)
+        			}
+        		}
+        	}
+        	
+        	function strUrl(json){
+			var arr = []
+		    for(i in json){
+			arr.push(i+'='+json[i])
+		    }
+		    var str = arr.join('&')
+		    return str
+		   
+		    }
+        }	
+		
+		
+	</script>
+	</body>
+</html>
